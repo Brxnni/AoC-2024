@@ -8,14 +8,12 @@ with open(FILE, "r") as file:
 	program = file.read()
 
 def part1(p):
-	# Shitty regex solution
 	pattern = re.compile(r"mul\(\d{1,3},\d{1,3}\)")
 	instructions = re.findall(pattern, p)
 	mul = lambda x,y:int(x)*int(y)
 	return sum([ mul(*inst[4:-1].split(",")) for inst in instructions ])
 
 def part2(p):
-	# Extremely shitty regex solution
 	pattern = re.compile(r"(?:mul\(\d{1,3},\d{1,3}\))|(?:do(?:n't)?\(\))")
 	instructions = re.findall(pattern, p)
 	final = 0
@@ -29,4 +27,5 @@ def part2(p):
 			final += int(x)*int(y)
 	return final
 
-print(part2(program))
+print("P1 >>", part1(program))
+print("P2 >>", part2(program))
