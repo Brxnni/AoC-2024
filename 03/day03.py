@@ -5,7 +5,7 @@ LOCAL = pathlib.Path(__file__).parent
 
 def get_input(input_type = "input"):
 	with open(LOCAL / f"{input_type}.txt", "r") as file:
-		program = file.read().strip()
+		return file.read().strip()
 
 def part1(p):
 	pattern = re.compile(r"mul\(\d{1,3},\d{1,3}\)")
