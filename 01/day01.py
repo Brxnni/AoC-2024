@@ -2,10 +2,10 @@ import numpy as np
 
 import pathlib
 LOCAL = pathlib.Path(__file__).parent
-FILE = LOCAL / "input.txt"
 
-with open(FILE, "r") as file:
-	mat = np.array([ list(map(int, line.strip().split("   "))) for line in file.readlines() ])
+def get_input(input_type = "input"):
+	with open(LOCAL / f"{input_type}.txt", "r") as file:
+		return np.array([ list(map(int, line.strip().split("   "))) for line in file.readlines() ])
 
 def part1(m):
 	m = np.transpose(m)
@@ -17,5 +17,7 @@ def part2(m):
 	occ = dict(zip(*np.unique(m[1], return_counts=True)))
 	return sum([ n * occ.get(n, 0) for n in m[0] ])
 
-print("P1 >>", part1(mat))
-print("P2 >>", part2(mat))
+if __name__ == "__main__":
+	matrix = get_input()
+	print("P1 >>", part1(matrix))
+	print("P2 >>", part2(matrix))

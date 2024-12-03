@@ -2,10 +2,10 @@ import re
 
 import pathlib
 LOCAL = pathlib.Path(__file__).parent
-FILE = LOCAL / "input.txt"
 
-with open(FILE, "r") as file:
-	program = file.read().strip()
+def get_input(input_type = "input"):
+	with open(LOCAL / f"{input_type}.txt", "r") as file:
+		program = file.read().strip()
 
 def part1(p):
 	pattern = re.compile(r"mul\(\d{1,3},\d{1,3}\)")
@@ -51,10 +51,11 @@ def part2_noregex(p):
 			sub = p[i+4:i+4+p[i+4:].index(")")]
 			try:
 				x, y = sub.split(",")
-				x, y = int(x), int(y)
-			except:	continue
-			final += x*y
+				final += int(x) * int(y)
+			except: ...
 	return final
 
-print("P1 >>", part1_noregex(program))
-print("P2 >>", part2_noregex(program))
+if __name__ == "__main__":
+	program = get_input()
+	print("P1 >>", part1(program))
+	print("P2 >>", part2(program))
