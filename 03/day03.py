@@ -13,7 +13,6 @@ def part1(p):
 	mul = lambda x,y:int(x)*int(y)
 	return sum([ mul(*inst[4:-1].split(",")) for inst in instructions ])
 
-# Function without regex (7 times slower)
 def part1_noregex(p):
 	final = 0
 	for i in range(len(p)):
@@ -40,7 +39,6 @@ def part2(p):
 			final += int(x)*int(y)
 	return final
 
-# Function without regex (10 times slower)
 def part2_noregex(p):
 	final = 0
 	do_status = True

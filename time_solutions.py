@@ -54,12 +54,17 @@ if __name__ == "__main__":
 			for _ in range(TRY_COUNT):
 				res = func(inp)
 			t1 = time.time()
-			final = (t1-t0)/TRY_COUNT
-			times[name] = final
+			res_time = (t1-t0)/TRY_COUNT
+			times[name] = res_time
+
+			time_str = f"{(res_time):.3e}"
+			print(f"{(name):>{longest}} :: {BLUE}{time_str}s{END}", end="")
 
 			if comparison_time:
-				diff = comparison_time / final
-				diff_str = f"{RED}{round(1/diff, 2)}x slower{END}" if diff < 1 else f"{GREEN}{round(diff, 2)}x faster{END}"
-				print(f"{(name):>{longest}} :: {BLUE}{(final):.4E}s{END} [{diff_str} than {name[:5]}]")
+				diff = comparison_time / res_time
+				if diff < 1:
+					print(f" [{RED}{round(1/diff, 2)}x slower{END} than {name[:5]}]")
+				else:
+					print(f" [{GREEN}{round(diff, 2)}x faster{END} than {name[:5]}]")
 			else:
-				print(f"{(name):>{longest}} :: {BLUE}{(final):.4E}s{END}")
+				print()
