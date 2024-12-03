@@ -5,13 +5,26 @@ LOCAL = pathlib.Path(__file__).parent
 FILE = LOCAL / "input.txt"
 
 with open(FILE, "r") as file:
-	program = file.read()
+	program = file.read().strip()
 
 def part1(p):
 	pattern = re.compile(r"mul\(\d{1,3},\d{1,3}\)")
 	instructions = re.findall(pattern, p)
 	mul = lambda x,y:int(x)*int(y)
 	return sum([ mul(*inst[4:-1].split(",")) for inst in instructions ])
+
+# Function without regex (7 times slower)
+def part1_noregex(p):
+	final = 0
+	for i in range(len(p)):
+		if p[i:i+4] == "mul(":
+			sub = p[i+4:i+4+p[i+4:].index(")")]
+			try:
+				x, y = sub.split(",")
+				x, y = int(x), int(y)
+			except:	continue
+			final += x*y
+	return final
 
 def part2(p):
 	pattern = re.compile(r"(?:mul\(\d{1,3},\d{1,3}\))|(?:do(?:n't)?\(\))")
@@ -27,5 +40,21 @@ def part2(p):
 			final += int(x)*int(y)
 	return final
 
-print("P1 >>", part1(program))
-print("P2 >>", part2(program))
+# Function without regex (10 times slower)
+def part2_noregex(p):
+	final = 0
+	do_status = True
+	for i in range(len(p)):
+		if p[i:i+4] == "do()":		do_status = True
+		if p[i:i+7] == "don't()":	do_status = False
+		if p[i:i+4] == "mul(" and do_status:
+			sub = p[i+4:i+4+p[i+4:].index(")")]
+			try:
+				x, y = sub.split(",")
+				x, y = int(x), int(y)
+			except:	continue
+			final += x*y
+	return final
+
+print("P1 >>", part1_noregex(program))
+print("P2 >>", part2_noregex(program))
