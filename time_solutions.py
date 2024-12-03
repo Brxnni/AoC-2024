@@ -6,12 +6,11 @@ import re
 import pathlib
 LOCAL = pathlib.Path(__file__).parent
 
-class C:
-	GREEN = "\033[92m"
-	RED = "\033[91m"
-	BLUE = "\033[94m"
-	BOLD = "\033[1m"
-	END = "\033[0m"
+GREEN = "\033[92m"
+RED = "\033[91m"
+BLUE = "\033[94m"
+BOLD = "\033[1m"
+END = "\033[0m"
 
 import time
 
@@ -27,31 +26,30 @@ def get_solutions():
 				module = importlib.util.module_from_spec(spec)
 				spec.loader.exec_module(module)
 
-				solutions[module_name] = dict(inspect.getmembers(module, inspect.isfunction))
-
-				# Get functions defined in the module
-				# for name, func in inspect.getmembers(module, inspect.isfunction):
-					# Store the function in the dictionary
-					# solutions[name] = func
+				solutions[file.split(".")[0]] = dict(inspect.getmembers(module, inspect.isfunction))
 
 	return solutions
 
+# higher than 50 and the testing takes forever to run (python is slow yeah yeah stfu)
 TRY_COUNT = 50
 
 if __name__ == "__main__":
 	all_functions = get_solutions()
-	
+
+	# To right-align all the function names across the entire output
 	longest = max([ len(max(funcs.keys(), key=len)) for funcs in all_functions.values() ])
 
 	for file, functions in all_functions.items():
-		print(f"{C.BOLD}==== {file} ===={C.END}")
+		print(f"{BOLD}==== {file} ===={END}")
 		inp = functions["get_input"]()
 
 		times = {}
 		for name, func in functions.items():
 			if name == "get_input": continue
+			# If we're currently doing part1_xyz, try checking for just part1
 			comparison_time = times[name[:5]] if name[:5] in times.keys() else 0
 
+			# Calculate average time it takes to run solution
 			t0 = time.time()
 			for _ in range(TRY_COUNT):
 				res = func(inp)
@@ -61,7 +59,7 @@ if __name__ == "__main__":
 
 			if comparison_time:
 				diff = comparison_time / final
-				diff_str = f"{C.RED}{round(1/diff, 2)}x slower{C.END}" if diff < 1 else f"{C.GREEN}{round(diff, 2)}x faster{C.END}"
-				print(f"{(name):>{longest}} :: {C.BLUE}{(final):.4E}s{C.END} [{diff_str} than {name[:5]}]")
+				diff_str = f"{RED}{round(1/diff, 2)}x slower{END}" if diff < 1 else f"{GREEN}{round(diff, 2)}x faster{END}"
+				print(f"{(name):>{longest}} :: {BLUE}{(final):.4E}s{END} [{diff_str} than {name[:5]}]")
 			else:
-				print(f"{(name):>{longest}} :: {C.BLUE}{(final):.4E}s{C.END}")
+				print(f"{(name):>{longest}} :: {BLUE}{(final):.4E}s{END}")
