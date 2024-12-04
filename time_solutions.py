@@ -47,7 +47,8 @@ if __name__ == "__main__":
 		inp = functions["get_input"]()
 
 		times = {}
-		for name, func in functions.items():
+		# Sort by name so that "part1" comes before "part1_xyz"
+		for name, func in sorted(functions.items(), key=lambda item: item[0]):
 			if name == "get_input": continue
 
 			# If we're currently doing part1_xyz, try checking for just part1
@@ -74,9 +75,8 @@ if __name__ == "__main__":
 
 			if comparison_time:
 				diff = comparison_time / res_time
-				if diff < 1:
-					print(f" [{RED}{round(1/diff, 2)}x slower{END} than {name[:5]}]")
-				else:
-					print(f" [{GREEN}{round(diff, 2)}x faster{END} than {name[:5]}]")
+				if diff < 1:	diff_str = f"{RED}{round(1/diff, 2)}x slower{END}"
+				else:			diff_str = f"{GREEN}{round(diff, 2)}x faster{END}"
+				print(f" [{diff_str} than {name[:5]}]")
 			else:
 				print()
