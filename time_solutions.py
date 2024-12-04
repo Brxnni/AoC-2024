@@ -63,8 +63,14 @@ if __name__ == "__main__":
 			res_time /= TRY_COUNT
 			times[name] = res_time
 
-			time_str = f"{(res_time):.2e}"
-			print(f"{(name):>{longest}} :: {BLUE}{time_str}s{END}", end="")
+			if res_time < 1e-3:
+				time_str = f"{(res_time*1e6):.2f}µs"
+			elif res_time < 1:
+				time_str = f"{(res_time*1e3):.2f}ms"
+			else:
+				time_str = f"{res_time:.2f}s"
+
+			print(f"{(name):>{longest}} :: {BLUE}{time_str}{END}", end="")
 
 			if comparison_time:
 				diff = comparison_time / res_time

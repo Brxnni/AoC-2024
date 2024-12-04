@@ -29,7 +29,21 @@ def part1(text):
 
 	return count(rows) + count(columns) + count(diagonals)
 
+def part2(text):
+	size = len(text)
+	count = 0
+
+	for ri in range(size-2):
+		for ci in range(size-2):
+			center = text[ri+1][ci+1]
+			cross = text[ri][ci] + text[ri][ci+2] + text[ri+2][ci] + text[ri+2][ci+2]
+
+			if center == "A" and cross in ["MMSS", "SMSM", "SSMM", "MSMS"]:
+				count += 1
+
+	return count
+
 if __name__ == "__main__":
 	puzzle = get_input("input")
 	print("P1 >>", part1(puzzle))
-	# print("P2 >>", part2(puzzle))
+	print("P2 >>", part2(puzzle))
