@@ -15,6 +15,8 @@ GREEN = "\033[92m"
 YELLOW = "\033[93m"
 RED = "\033[91m"
 BLUE = "\033[94m"
+LIGHT_BLUE = "\033[36m"
+PURPLE = "\033[35m"
 GRAY = "\033[90m"
 BOLD = "\033[1m"
 END = "\033[0m"
@@ -87,13 +89,13 @@ if __name__ == "__main__":
 				continue
 
 			if res_time < 1e-3:
-				time_str = f"{(res_time*1e6):.2f}µs"
+				time_str = f"{LIGHT_BLUE}{(res_time*1e6):.2f}µs"
 			elif res_time < 1:
-				time_str = f"{(res_time*1e3):.2f}ms"
+				time_str = f"{BLUE}{(res_time*1e3):.2f}ms"
 			else:
-				time_str = f"{res_time:.2f}s"
+				time_str = f"{PURPLE}{res_time:.2f}s"
 
-			print(f"{(name):>{longest}} {GRAY}::{END} {BLUE}{time_str}{END}", end=" ")
+			print(f"{(name):>{longest}} {GRAY}::{END} {time_str}{END}", end=" ")
 
 			if comparison_time:
 				diff = round(comparison_time / res_time, 2)
