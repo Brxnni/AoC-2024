@@ -1,16 +1,21 @@
 import importlib.util
 import inspect
 import time
+import sys
 import os
 import re
 
 import pathlib
 LOCAL = pathlib.Path(__file__).parent
 
+ARGS = sys.argv[1:]
+
+
 # If your terminal doesn't support ANSI codes, then skill issue I guess just empty these strings or something
 GREEN = "\033[92m"
 RED = "\033[91m"
 BLUE = "\033[94m"
+GRAY = "\033[90m"
 BOLD = "\033[1m"
 END = "\033[0m"
 
@@ -19,6 +24,7 @@ def get_solutions():
 
 	for subdir, _, files in os.walk(LOCAL):
 		for file in files:
+			if len(ARGS) and file.split(".")[0] != ARGS[0]: continue
 			if re.match(r"^day\d+\.py$", file):
 				file_path = os.path.join(subdir, file)
 				module_name = os.path.splitext(os.path.relpath(file_path, LOCAL))[0].replace(os.sep, ".")
@@ -39,6 +45,10 @@ TRY_COUNT = 47
 if __name__ == "__main__":
 	all_functions = get_solutions()
 
+	if len(all_functions) == 0:
+		print("Invalid argument, no files found!")
+		exit(0)
+
 	# To right-align all the function names across the entire output
 	longest = max([ len(max(funcs.keys(), key=len)) for funcs in all_functions.values() ])
 
@@ -56,6 +66,7 @@ if __name__ == "__main__":
 
 			# Calculate average time it takes to run solution
 			res_time = 0
+			res = None
 			for _ in range(TRY_COUNT):
 				t0 = time.time()
 				res = func(inp)
@@ -71,12 +82,12 @@ if __name__ == "__main__":
 			else:
 				time_str = f"{res_time:.2f}s"
 
-			print(f"{(name):>{longest}} :: {BLUE}{time_str}{END}", end="")
+			print(f"{(name):>{longest}} {GRAY}::{END} {BLUE}{time_str}{END}", end=" ")
 
 			if comparison_time:
 				diff = comparison_time / res_time
 				if diff < 1:	diff_str = f"{RED}{round(1/diff, 2)}x slower{END}"
 				else:			diff_str = f"{GREEN}{round(diff, 2)}x faster{END}"
-				print(f" [{diff_str} than {name[:5]}]")
+				print(f"[{diff_str} than {name[:5]}]")
 			else:
-				print()
+				print(f"{GRAY}-> {res}{END}")

@@ -43,6 +43,23 @@ def part2(text):
 
 	return count
 
+def part2_earlycheck(text):
+	size = len(text)
+	count = 0
+
+	for ri in range(size-2):
+		for ci in range(size-2):
+			center = text[ri+1][ci+1]
+			# This check before computing the corners makes it like 2x faster??
+			# Apparently the concatenation after is really fucking slow? python moment
+			if center != "A": continue
+
+			cross = text[ri][ci] + text[ri][ci+2] + text[ri+2][ci] + text[ri+2][ci+2]
+			if cross in ["MMSS", "SMSM", "SSMM", "MSMS"]:
+				count += 1
+
+	return count
+
 if __name__ == "__main__":
 	puzzle = get_input("input")
 	print("P1 >>", part1(puzzle))
