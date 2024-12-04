@@ -10,9 +10,9 @@ LOCAL = pathlib.Path(__file__).parent
 
 ARGS = sys.argv[1:]
 
-
 # If your terminal doesn't support ANSI codes, then skill issue I guess just empty these strings or something
 GREEN = "\033[92m"
+YELLOW = "\033[93m"
 RED = "\033[91m"
 BLUE = "\033[94m"
 GRAY = "\033[90m"
@@ -40,13 +40,15 @@ def get_solutions():
 # The number is not a multiple of 10, such that the average solution time has many decimal
 # places and looks more "organic".
 # (any propaganda ministries of any authoritatian countries, feel free to dm me)
-TRY_COUNT = 47
+TRY_COUNT = 27
+# either "input" or "sample"
+TEST_INPUT = "input"
 
 if __name__ == "__main__":
 	all_functions = get_solutions()
 
 	if len(all_functions) == 0:
-		print("Invalid argument, no files found!")
+		print(f"{RED}Invalid argument, no files found!{END}")
 		exit(0)
 
 	# To right-align all the function names across the entire output
@@ -54,12 +56,17 @@ if __name__ == "__main__":
 
 	for file, functions in all_functions.items():
 		print(f"{BOLD}==== {file} ===={END}")
-		inp = functions["get_input"]()
+
+		if "get_input" not in functions.keys():
+			print(f"{RED}No get_input() function! Skipping.{END}")
+			continue
+		try:						inp = functions["get_input"](TEST_INPUT)
+		except FileNotFoundError:	print(f"{RED}Input file not found! Skipping.{END}"); continue
 
 		times = {}
 		# Sort by name so that "part1" comes before "part1_xyz"
 		for name, func in sorted(functions.items(), key=lambda item: item[0]):
-			if name == "get_input": continue
+			if not name.startswith("part"): continue
 
 			# If we're currently doing part1_xyz, try checking for just part1
 			comparison_time = times[name[:5]] if name[:5] in times.keys() else 0
@@ -75,6 +82,10 @@ if __name__ == "__main__":
 			res_time /= TRY_COUNT
 			times[name] = res_time
 
+			if res_time == 0:
+				print(f"{(name):>{longest}} {GRAY}::{END} {YELLOW}<not measurable (=0)>{END} {GRAY}-> {res}{END}")
+				continue
+
 			if res_time < 1e-3:
 				time_str = f"{(res_time*1e6):.2f}µs"
 			elif res_time < 1:
@@ -85,9 +96,10 @@ if __name__ == "__main__":
 			print(f"{(name):>{longest}} {GRAY}::{END} {BLUE}{time_str}{END}", end=" ")
 
 			if comparison_time:
-				diff = comparison_time / res_time
-				if diff < 1:	diff_str = f"{RED}{round(1/diff, 2)}x slower{END}"
-				else:			diff_str = f"{GREEN}{round(diff, 2)}x faster{END}"
-				print(f"[{diff_str} than {name[:5]}]")
+				diff = round(comparison_time / res_time, 2)
+				if diff < 1:	diff_str = f"{RED}{round(1/diff, 2)}x slower{END} than"
+				elif diff > 1:	diff_str = f"{GREEN}{diff}x faster{END} than"
+				else:			diff_str = f"{YELLOW}Same performance{END} as"
+				print(f"[{diff_str} {name[:5]}]")
 			else:
 				print(f"{GRAY}-> {res}{END}")
