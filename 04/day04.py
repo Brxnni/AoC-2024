@@ -9,25 +9,27 @@ def part1(text):
 	rows = text
 	columns = [ "".join(row) for row in list(zip(*text)) ]
 	diagonal_coords = []
-	dim = len(text)
-	if dim > 4:
-		diagonal_coords.append([ (i,i) for i in range(dim) ])
-		diagonal_coords.append([ (dim-i-1, i) for i in range(dim) ])
+	# The input is square shaped!!!!! this will prevent the second bronze age collapse
+	size = len(text)
 
-	extras = dim - 4
-	for j in range(1, extras+1):
-		diagonal_coords.append([ (i,i+j) for i in range(dim-j) ])
-		diagonal_coords.append([ (i+j,i) for i in range(dim-j) ])
-		diagonal_coords.append([ (dim-i-1,i+j) for i in range(dim-j) ])
-		# diagonal_coords.append([ (i+j,dim-i-1) for i in range(dim-j+1) ])
+	# NW/SE diagonals (only the ones of length at least 4)
+	diagonal_coords.append([ (c,c) for c in range(size) ])
+	for i in range(1, size-4+1):
+		diagonal_coords.append([ (i+j,j) for j in range(size-i) ])
+		diagonal_coords.append([ (j,i+j) for j in range(size-i)  ])
+
+	# NE/SW diagonals
+	diagonal_coords.append([ (size-1-c,c) for c in range(size) ])
+	for i in range(1, size-4+1):
+		diagonal_coords.append([ (size-1-i-j,j) for j in range(size-i) ])
+		diagonal_coords.append([ (size-1-j,i+j) for j in range(size-i) ])
+
 	diagonals = [ "".join([ text[d[1]][d[0]] for d in diagonal ]) for diagonal in diagonal_coords ]
+	count = lambda texts: sum([ t.count("XMAS") for t in texts ]) + sum([ t[::-1].count("XMAS") for t in texts ])
 
-	[ print(l) for l in list(zip([(dc[0],dc[-1]) for dc in diagonal_coords], diagonals))]
-
-	c = lambda ts: sum([ t.count("XMAS") for t in ts ]) + sum([ t[::-1].count("XMAS") for t in ts ])
-	return c(rows) + c(columns) + c(diagonals)
+	return count(rows) + count(columns) + count(diagonals)
 
 if __name__ == "__main__":
-	puzzle = get_input("sample")
+	puzzle = get_input("input")
 	print("P1 >>", part1(puzzle))
 	# print("P2 >>", part2(puzzle))
