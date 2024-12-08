@@ -13,6 +13,8 @@ def part1(n):
 	def check(res, nums):
 		if len(nums) == 1:
 			return nums[0] == res
+
+		# + or *
 		return check(res - nums[-1], nums[:-1]) or check(res / nums[-1], nums[:-1])
 
 	for line in n:
@@ -42,10 +44,13 @@ def part2(n):
 		if len(nums) == 1:
 			return nums[0] == res
 
+		# + operator
 		if check(res - nums[-1], nums[:-1]):
 			return True
+		# * operator
 		if res % nums[-1] == 0:
 			if check(int(res / nums[-1]), nums[:-1]): return True
+		# || operator
 		if str(res).endswith(str(nums[-1])):
 			try:
 				if check(int(str(res)[:-len(str(nums[-1]))]), nums[:-1]): return True
