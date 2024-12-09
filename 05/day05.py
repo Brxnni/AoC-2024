@@ -24,9 +24,6 @@ def part1(program):
 
 	return total
 
-def part2(program):
-	rules, pagelists = program
-
 if __name__ == "__main__":
 	p = get_input("input")
 	print("P1 >>", part1(p))

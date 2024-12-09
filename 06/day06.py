@@ -27,8 +27,6 @@ def part1(m):
 		else:
 			guard_direction = (guard_direction + 1) % 4
 
-		print(guard_position)
-
 	return len(positions)
 
 if __name__ == "__main__":
